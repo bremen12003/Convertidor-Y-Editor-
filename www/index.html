@@ -5813,7 +5813,7 @@ window.addEventListener('resize', function() {
 
 <script>
 /* SISTEMA A PRUEBA DE FALLOS - SIEMPRE ENTRA EN PRUEBA LA PRIMERA VEZ */
-(function(){
+(async function(){
   const SECRETO = "VMG-2026-Refresco-73X9";
   const TRIAL = 24*60*60*1000;
   const $ = id => document.getElementById(id);
@@ -5834,30 +5834,100 @@ window.addEventListener('resize', function() {
       return "VMG-" + Math.random().toString(36).substring(2,6).toUpperCase();
     }
   }
-  
+
   function getClave(id){
     let str = (id + SECRETO).toUpperCase(); let h=0;
     for(let i=0;i<str.length;i++){ h=(h*31+str.charCodeAt(i))>>>0; } h=(h^(h>>>16))>>>0;
     return "VMG-"+h.toString(36).toUpperCase().padStart(8,'0').slice(-8)+"-"+(h%9973).toString().padStart(4,'0');
   }
-  
-  function getInicio(){
+
+  /* ----- PERSISTENCIA DEL PRIMER USO (sobrevive desinstalar/reinstalar) -----
+     Orden de prioridad:
+     1) AndroidInterface.getInstalacion()/setInstalacion()  -> si agregas ese
+        método nativo (ver nota más abajo), guarda la fecha fuera de los
+        datos de la app y Android NO la borra al desinstalar.
+     2) Plugin Capacitor Filesystem (si el proyecto lo tiene instalado)
+        -> escribe un archivo oculto en almacenamiento compartido.
+     3) localStorage -> último recurso; esto SÍ se borra al desinstalar,
+        es el comportamiento que tenías antes.
+  ----------------------------------------------------------------------- */
+
+  function leerInstalacionNativa(){
     try{
-      let t = localStorage.getItem('vmg_primer_uso');
-      if(!t){ t=Date.now().toString(); localStorage.setItem('vmg_primer_uso', t); }
-      return parseInt(t,10);
-    }catch(e){ return Date.now(); }
+      if(window.AndroidInterface && AndroidInterface.getInstalacion){
+        let v = AndroidInterface.getInstalacion();
+        if(v){ let t = parseInt(v,10); if(!isNaN(t) && t>0) return t; }
+      }
+    }catch(e){}
+    return null;
   }
-  
+
+  function escribirInstalacionNativa(t){
+    try{
+      if(window.AndroidInterface && AndroidInterface.setInstalacion){
+        AndroidInterface.setInstalacion(t.toString());
+        return true;
+      }
+    }catch(e){}
+    return false;
+  }
+
+  function getFSPlugin(){
+    try{
+      return (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Filesystem)
+        ? window.Capacitor.Plugins.Filesystem : null;
+    }catch(e){ return null; }
+  }
+
+  async function leerInstalacionFS(){
+    const FS = getFSPlugin();
+    if(!FS) return null;
+    try{
+      const res = await FS.readFile({ path: '.vmg_cache/primer_uso.txt', directory: 'DOCUMENTS' });
+      let t = parseInt(res.data,10);
+      return (!isNaN(t) && t>0) ? t : null;
+    }catch(e){ return null; }
+  }
+
+  async function escribirInstalacionFS(t){
+    const FS = getFSPlugin();
+    if(!FS) return;
+    try{ await FS.mkdir({ path: '.vmg_cache', directory: 'DOCUMENTS', recursive: true }); }catch(e){}
+    try{ await FS.writeFile({ path: '.vmg_cache/primer_uso.txt', directory: 'DOCUMENTS', data: t.toString(), encoding: 'utf8' }); }catch(e){}
+  }
+
+  async function resolverInicio(){
+    // 1) Puente nativo Android (el más confiable)
+    let t = leerInstalacionNativa();
+    if(t){ try{ localStorage.setItem('vmg_primer_uso', t.toString()); }catch(e){} return t; }
+
+    // 2) Plugin Capacitor Filesystem
+    t = await leerInstalacionFS();
+    if(t){ try{ localStorage.setItem('vmg_primer_uso', t.toString()); }catch(e){} return t; }
+
+    // 3) localStorage (ya existente) o fecha nueva si es de verdad la primera vez
+    try{
+      let ls = localStorage.getItem('vmg_primer_uso');
+      if(ls) t = parseInt(ls,10);
+    }catch(e){}
+    if(!t){ t = Date.now(); }
+
+    try{ localStorage.setItem('vmg_primer_uso', t.toString()); }catch(e){}
+    // Se intenta guardar de forma persistente para la próxima vez (no bloqueante)
+    if(!escribirInstalacionNativa(t)){ escribirInstalacionFS(t); }
+    return t;
+  }
+
+  let INICIO = null;
+
   function enPrueba(){
     try{
-      let inicio = getInicio();
-      return (Date.now() - inicio) < TRIAL;
+      return (Date.now() - INICIO) < TRIAL;
     }catch(e){ return true; } // si falla, dejamos pasar en prueba
   }
-  
+
   function tiempo(){
-    let fin = getInicio()+TRIAL; let r = fin - Date.now(); if(r<0)r=0;
+    let fin = INICIO+TRIAL; let r = fin - Date.now(); if(r<0)r=0;
     return {h:Math.floor(r/3600000), m:Math.floor((r%3600000)/60000), total:r};
   }
 
@@ -5891,7 +5961,9 @@ window.addEventListener('resize', function() {
       $('trial-banner').classList.remove('visible');
       return;
     }
-    
+
+    INICIO = await resolverInicio();
+
     if(enPrueba()){
       // MODO PRUEBA - ENTRAR DIRECTO
       $('lock-screen').classList.remove('visible');
