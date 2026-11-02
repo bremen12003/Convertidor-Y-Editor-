@@ -813,55 +813,22 @@
     #tab-bar { display:none !important; }
 
     
-    
-    /* ===== PRUEBA 1 DIA ===== */
-    #trial-banner {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 9998;
-      background: linear-gradient(90deg, #c8f03a, #ffd700);
-      color: #0a0a0a; font-size: 10px; font-weight: 800; text-align: center;
-      padding: 6px 10px; letter-spacing: .05em; display: none;
-    }
-    #trial-banner.visible { display: block; }
+    #trial-banner{position:fixed;top:0;left:0;right:0;z-index:9998;background:linear-gradient(90deg,#c8f03a,#ffd700);color:#0a0a0a;font-size:11px;font-weight:900;text-align:center;padding:8px 10px;letter-spacing:.05em;display:none;box-shadow:0 2px 10px rgba(0,0,0,.5)}
+    #trial-banner.visible{display:block}
+    #lock-screen{position:fixed;inset:0;z-index:9999;background:#050505;display:none;flex-direction:column;align-items:center;justify-content:center;padding:18px}
+    #lock-screen.visible{display:flex !important}
+    .lock-card{background:#121212;border:2px solid #c8f03a;border-radius:16px;padding:20px 16px;width:100%;max-width:360px;display:flex;flex-direction:column;gap:12px}
+    .lock-card h2{font-size:15px;color:#c8f03a;text-align:center;text-transform:uppercase;letter-spacing:.1em}
+    .lock-card p{font-size:10px;color:#888;text-align:center;line-height:1.4}
+    .id-box{background:#0a0a0a;border:1px dashed #333;border-radius:10px;padding:10px;text-align:center}
+    .id-box .lbl{font-size:8px;color:#666;text-transform:uppercase;letter-spacing:.1em}
+    .id-box .val{font-size:12px;color:#33ff88;font-weight:800;margin-top:4px;font-family:monospace;word-break:break-all}
+    .lock-input{background:#0a0a0a;border:1.5px solid #333;border-radius:10px;padding:12px;color:#fff;font-size:13px;font-family:monospace;text-align:center;width:100%;outline:none}
+    .btn-lock{background:#c8f03a;color:#0a0a0a;border:none;border-radius:10px;padding:12px;font-size:12px;font-weight:900;text-transform:uppercase;cursor:pointer}
+    .btn-lock.secondary{background:transparent;color:#888;border:1px solid #333}
+    .lock-footer{font-size:8px;color:#555;text-align:center}
 
-    /* ===== SISTEMA DE LICENCIA POR ID DE DISPOSITIVO ===== */
-    #lock-screen {
-      position: fixed; inset: 0; z-index: 9999;
-      background: radial-gradient(ellipse at 20% 50%, #0f0f1a, #050505);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: 18px; gap: 14px;
-    }
-    #lock-screen.hidden { display: none !important; }
-    .lock-card {
-      background: linear-gradient(145deg, #1a1a1a, #121212);
-      border: 2px solid var(--accent); border-radius: 16px;
-      padding: 20px 16px; width: 100%; max-width: 360px;
-      box-shadow: 0 0 30px var(--accent-glow); display: flex; flex-direction: column; gap: 12px;
-    }
-    .lock-card h2 { font-size: 15px; color: var(--accent); text-align: center; letter-spacing: .1em; text-transform: uppercase; }
-    .lock-card p { font-size: 10px; color: var(--text-dim); text-align: center; line-height: 1.4; }
-    .id-box {
-      background: #0a0a0a; border: 1px dashed var(--border); border-radius: 10px;
-      padding: 10px; text-align: center; word-break: break-all;
-    }
-    .id-box .lbl { font-size: 8px; color: var(--text-dim); text-transform: uppercase; letter-spacing: .1em; }
-    .id-box .val { font-size: 12px; color: var(--green); font-weight: 800; margin-top: 4px; letter-spacing: .05em; font-family: monospace; }
-    .lock-input {
-      background: #0a0a0a; border: 1.5px solid var(--border); border-radius: 10px;
-      padding: 12px; color: var(--text); font-size: 13px; font-family: monospace; text-align: center;
-      letter-spacing: .08em; width: 100%; outline: none;
-    }
-    .lock-input:focus { border-color: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
-    .btn-lock {
-      background: var(--accent); color: #0a0a0a; border: none; border-radius: 10px;
-      padding: 12px; font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: .08em;
-      cursor: pointer; box-shadow: 0 0 15px var(--accent-glow); transition: transform .15s;
-    }
-    .btn-lock:active { transform: scale(.96); }
-    .btn-lock.secondary { background: transparent; color: var(--text-dim); border: 1px solid var(--border); box-shadow: none; }
-    .lock-footer { font-size: 8px; color: #555; text-align: center; margin-top: 6px; }
-    #qr-reader { width: 100%; border-radius: 10px; overflow: hidden; display: none; }
-
-    </style>
+</style>
 </head>
 <body>
 
@@ -940,32 +907,23 @@
   
     
     
-    <!-- ===== PANTALLA DE BLOQUEO POR LICENCIA ===== -->
-    <div id="trial-banner"></div>
-    <div id="lock-screen">
-      <div class="lock-card">
-        <h2>🔒 Activación Requerida</h2>
-        <p>Esta app está protegida. Envía tu ID de dispositivo al administrador para recibir tu clave de activación.</p>
-        <div class="id-box">
-          <div class="lbl">ID de tu dispositivo</div>
-          <div class="val" id="device-id-display">CARGANDO...</div>
-          <div id="device-qr" style="display:flex;justify-content:center;padding:8px;background:white;border-radius:10px;margin-top:8px"></div>
-          <div style="margin-top:6px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap">
-            <button class="btn-lock secondary" style="padding:6px 10px;font-size:9px" onclick="copiarID()">📋 Copiar ID</button>
-            <button class="btn-lock secondary" style="padding:6px 10px;font-size:9px" onclick="compartirID()">📤 Compartir ID</button>
-            <button class="btn-lock secondary" style="padding:6px 10px;font-size:9px" onclick="mostrarQRMiID()">📷 Mi QR</button>
-          </div>
-        </div>
-        <input id="license-input" class="lock-input" placeholder="Pega tu clave aquí o escanea QR" maxlength="32" />
-        <button class="btn-lock" onclick="verificarLicencia()">✅ Activar App</button>
-        <button class="btn-lock secondary" onclick="toggleQR()">📷 Escanear QR</button>
-        <div id="qr-reader"></div>
-        <p id="lock-msg" style="font-size:10px;color:var(--red);text-align:center;min-height:14px"></p>
-        <div class="lock-footer">Versatilidad Musical Galvez · Licencia por dispositivo<br>Contacto para clave: tu WhatsApp</div>
-      </div>
+<div id="trial-banner">⏳ MODO PRUEBA: Cargando...</div>
+<div id="lock-screen">
+  <div class="lock-card">
+    <h2>🔒 Activación Requerida</h2>
+    <p>Tu prueba de 1 día terminó. Envía tu ID al admin para tu clave.</p>
+    <div class="id-box">
+      <div class="lbl">ID de tu dispositivo</div>
+      <div class="val" id="device-id-display">OBTENIENDO...</div>
     </div>
+    <input id="license-input" class="lock-input" placeholder="Pega tu clave aquí" />
+    <button class="btn-lock" onclick="activar()">✅ Activar App</button>
+    <p id="lock-msg" style="font-size:10px;color:#ff3355;text-align:center;min-height:14px"></p>
+    <div class="lock-footer">Versatilidad Musical Galvez · Prueba 1 día</div>
+  </div>
+</div>
 
-    <div id="menu-principal">
+<div id="menu-principal">
       <div class="menu-title"><h2>Panel de Herramientas</h2><p>Toca una tarjeta para abrir</p></div>
       
       <div class="card-grid">
@@ -1310,215 +1268,6 @@ function volverMenu() {
     if (typeof stopAllNotesNkiConv==='function') stopAllNotesNkiConv();
   } catch(e){}
 }
-
-
-
-// ===== SISTEMA DE PRUEBA 1 DIA =====
-const TRIAL_MS = 24 * 60 * 60 * 1000; // 1 DIA
-
-function obtenerPrimerUso() {
-  let t = localStorage.getItem('vmg_primer_uso');
-  if (!t) {
-    t = Date.now().toString();
-    localStorage.setItem('vmg_primer_uso', t);
-  }
-  return parseInt(t, 10);
-}
-
-function estaEnPrueba() {
-  const inicio = obtenerPrimerUso();
-  const ahora = Date.now();
-  const transcurrido = ahora - inicio;
-  return transcurrido < TRIAL_MS;
-}
-
-function tiempoRestantePrueba() {
-  const inicio = obtenerPrimerUso();
-  const fin = inicio + TRIAL_MS;
-  let restante = fin - Date.now();
-  if (restante < 0) restante = 0;
-  const horas = Math.floor(restante / 3600000);
-  const mins = Math.floor((restante % 3600000) / 60000);
-  return { total: restante, h: horas, m: mins };
-}
-
-function mostrarBannerPrueba() {
-  const banner = document.getElementById('trial-banner');
-  if (!banner) return;
-  const r = tiempoRestantePrueba();
-  if (r.total <= 0) {
-    banner.classList.remove('visible');
-    return;
-  }
-  banner.textContent = `⏳ PRUEBA GRATIS: Te quedan ${r.h}h ${r.m}m - Luego pedirá activación`;
-  banner.classList.add('visible');
-  document.body.style.paddingTop = '24px';
-}
-
-// Modificar lógica de carga para respetar prueba
-
-// ===== SISTEMA DE LICENCIA =====
-// CAMBIA ESTA CLAVE SECRETA - SOLO TU LA SABES - ES LA QUE USA EL GENERADOR
-const SECRETO_MAESTRO = "VMG-2026-Refresco-73X9"; 
-
-function obtenerDeviceID() {
-  let id = "";
-  try {
-    // 1. Si está en WebView Android con interfaz Java
-    if (typeof AndroidInterface !== 'undefined' && AndroidInterface.getDeviceId) {
-      id = AndroidInterface.getDeviceId();
-    }
-  } catch(e){}
-  if (!id) {
-    // 2. Fallback: genera un ID estable basado en navegador + localStorage
-    let stored = localStorage.getItem('vmg_device_id');
-    if (stored) { id = stored; }
-    else {
-      // Crea un fingerprint simple pero estable
-      const nav = navigator.userAgent + '|' + navigator.language + '|' + screen.width + 'x' + screen.height;
-      let hash = 0;
-      for (let i=0;i<nav.length;i++){ hash = ((hash<<5)-hash)+nav.charCodeAt(i); hash|=0; }
-      const base = Math.abs(hash).toString(36).toUpperCase();
-      const rand = Math.random().toString(36).substring(2,6).toUpperCase();
-      id = "VMG-" + base + "-" + rand;
-      localStorage.setItem('vmg_device_id', id);
-    }
-  }
-  return id.trim().toUpperCase();
-}
-
-function generarClaveEsperada(deviceID) {
-  // Algoritmo simple pero efectivo: hash del ID + secreto
-  // Debe ser idéntico al del generador
-  const str = (deviceID + SECRETO_MAESTRO).toUpperCase();
-  let h = 0;
-  for (let i=0;i<str.length;i++){ h = (h * 31 + str.charCodeAt(i)) >>> 0; }
-  // Mezcla extra
-  h = (h ^ (h >>> 16)) >>> 0;
-  const clave = "VMG-" + h.toString(36).toUpperCase().padStart(8,'0').slice(-8) + "-" + (h % 9973).toString().padStart(4,'0');
-  return clave; // Ejemplo: VMG-1A2B3C4D-1234
-}
-
-function verificarLicencia() {
-  const input = document.getElementById('license-input').value.trim().toUpperCase();
-  const deviceID = obtenerDeviceID();
-  const esperada = generarClaveEsperada(deviceID);
-  const msg = document.getElementById('lock-msg');
-  if (!input) { msg.textContent = "⚠️ Pega tu clave"; return; }
-  if (input === esperada) {
-    localStorage.setItem('vmg_licencia', input);
-    localStorage.setItem('vmg_device_id_verified', deviceID);
-    msg.style.color = "#33ff88";
-    msg.textContent = "✅ Licencia correcta, activando...";
-    setTimeout(() => {
-      document.getElementById('lock-screen').classList.add('hidden');
-      document.getElementById('menu-principal').classList.remove('hidden');
-    }, 800);
-  } else {
-    msg.style.color = "#ff3355";
-    msg.textContent = "❌ Clave incorrecta para este ID. Verifica.";
-  }
-}
-
-
-function mostrarQRMiID() {
-  const id = document.getElementById('device-id-display').textContent;
-  const cont = document.getElementById('device-qr');
-  if (!cont) return;
-  cont.innerHTML = "";
-  cont.style.display = "flex";
-  if (typeof QRCode === 'undefined') {
-    const s = document.createElement('script');
-    s.src = "https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js";
-    s.onload = () => { new QRCode(cont, {text: id, width: 140, height: 140}); };
-    document.head.appendChild(s);
-  } else {
-    new QRCode(cont, {text: id, width: 140, height: 140});
-  }
-  showToast('📷 QR de tu ID generado');
-}
-// Generar QR del ID automáticamente al cargar
-function generarQRIDAuto(id) {
-  const cont = document.getElementById('device-qr');
-  if (!cont) return;
-  setTimeout(() => mostrarQRMiID(), 500);
-}
-
-function copiarID() {
-  const id = document.getElementById('device-id-display').textContent;
-  navigator.clipboard.writeText(id).then(()=>{ showToast('📋 ID copiado'); });
-}
-function compartirID() {
-  const id = document.getElementById('device-id-display').textContent;
-  if (navigator.share) { navigator.share({title:'Mi ID Versatilidad', text:id}); }
-  else { copiarID(); }
-}
-function toggleQR() {
-  const reader = document.getElementById('qr-reader');
-  if (reader.style.display === 'block') { reader.style.display='none'; return; }
-  reader.style.display='block';
-  // Carga librería QR si no está
-  if (!window.Html5Qrcode) {
-    const s = document.createElement('script');
-    s.src = "https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js";
-    s.onload = iniciarQR;
-    document.head.appendChild(s);
-  } else { iniciarQR(); }
-}
-function iniciarQR() {
-  const qr = new Html5Qrcode("qr-reader");
-  qr.start({facingMode:"environment"}, {fps:10, qrbox:250},
-    (decoded) => {
-      document.getElementById('license-input').value = decoded.trim().toUpperCase();
-      qr.stop();
-      document.getElementById('qr-reader').style.display='none';
-      verificarLicencia();
-    },
-    (err)=>{}
-  );
-}
-
-// TRIAL PATCH
-window.addEventListener('load', () => {
-  const deviceID = obtenerDeviceID();
-  document.getElementById('device-id-display').textContent = deviceID;
-  const licenciaGuardada = localStorage.getItem('vmg_licencia');
-  const deviceGuardado = localStorage.getItem('vmg_device_id_verified');
-  if (licenciaGuardada && deviceGuardado === deviceID) {
-    const esperada = generarClaveEsperada(deviceID);
-    if (licenciaGuardada === esperada) {
-      document.getElementById('lock-screen').classList.add('hidden');
-      return;
-    }
-  }
-  // Verificar si está en prueba de 1 día
-  if (estaEnPrueba()) {
-    document.getElementById('lock-screen').classList.add('hidden');
-    mostrarBannerPrueba();
-    // Actualizar banner cada minuto
-    setInterval(mostrarBannerPrueba, 60000);
-    return;
-  }
-  // Si no hay licencia y expiró prueba, bloquear menu
-  const menu = document.getElementById('menu-principal');
-  if (menu) menu.classList.add('hidden');
-});
-  const deviceID = obtenerDeviceID();
-  document.getElementById('device-id-display').textContent = deviceID;
-  try { generarQRIDAuto(deviceID); } catch(e){}
-  const licenciaGuardada = localStorage.getItem('vmg_licencia');
-  const deviceGuardado = localStorage.getItem('vmg_device_id_verified');
-  if (licenciaGuardada && deviceGuardado === deviceID) {
-    const esperada = generarClaveEsperada(deviceID);
-    if (licenciaGuardada === esperada) {
-      document.getElementById('lock-screen').classList.add('hidden');
-      return;
-    }
-  }
-  // Si no hay licencia, bloquear menu
-  const menu = document.getElementById('menu-principal');
-  if (menu) menu.classList.add('hidden');
-});
 
 function switchTab(tabId) {
   document.querySelectorAll('.tab-btn').forEach(b => {
@@ -6061,5 +5810,114 @@ window.addEventListener('resize', function() {
   buildKeyboardCreador();
 });
 </script>
+
+<script>
+/* SISTEMA A PRUEBA DE FALLOS - SIEMPRE ENTRA EN PRUEBA LA PRIMERA VEZ */
+(function(){
+  const SECRETO = "VMG-2026-Refresco-73X9";
+  const TRIAL = 24*60*60*1000;
+  const $ = id => document.getElementById(id);
+  
+  function getID(){
+    try{
+      if(window.AndroidInterface && AndroidInterface.getDeviceId){
+        let a = AndroidInterface.getDeviceId(); if(a) return a.toUpperCase();
+      }
+    }catch(e){}
+    try{
+      let s = localStorage.getItem('vmg_device_id');
+      if(s) return s;
+      let id = "VMG-" + Math.random().toString(36).substring(2,6).toUpperCase() + "-" + Math.random().toString(36).substring(2,6).toUpperCase();
+      localStorage.setItem('vmg_device_id', id);
+      return id;
+    }catch(e){
+      return "VMG-" + Math.random().toString(36).substring(2,6).toUpperCase();
+    }
+  }
+  
+  function getClave(id){
+    let str = (id + SECRETO).toUpperCase(); let h=0;
+    for(let i=0;i<str.length;i++){ h=(h*31+str.charCodeAt(i))>>>0; } h=(h^(h>>>16))>>>0;
+    return "VMG-"+h.toString(36).toUpperCase().padStart(8,'0').slice(-8)+"-"+(h%9973).toString().padStart(4,'0');
+  }
+  
+  function getInicio(){
+    try{
+      let t = localStorage.getItem('vmg_primer_uso');
+      if(!t){ t=Date.now().toString(); localStorage.setItem('vmg_primer_uso', t); }
+      return parseInt(t,10);
+    }catch(e){ return Date.now(); }
+  }
+  
+  function enPrueba(){
+    try{
+      let inicio = getInicio();
+      return (Date.now() - inicio) < TRIAL;
+    }catch(e){ return true; } // si falla, dejamos pasar en prueba
+  }
+  
+  function tiempo(){
+    let fin = getInicio()+TRIAL; let r = fin - Date.now(); if(r<0)r=0;
+    return {h:Math.floor(r/3600000), m:Math.floor((r%3600000)/60000), total:r};
+  }
+
+  window.activar = function(){
+    let id = window._VMG_ID; let inp = $('license-input').value.trim().toUpperCase();
+    let esp = getClave(id);
+    let msg = $('lock-msg');
+    if(inp===esp){
+      try{ localStorage.setItem('vmg_licencia', inp); localStorage.setItem('vmg_device_id_verified', id); }catch(e){}
+      msg.style.color="#33ff88"; msg.textContent="✅ Correcta!";
+      setTimeout(()=>{ $('lock-screen').classList.remove('visible'); $('menu-principal').style.display=''; $('trial-banner').classList.remove('visible'); },500);
+    } else {
+      msg.textContent="❌ Incorrecta para "+id;
+    }
+  };
+
+  // INIT SEGURO
+  try{
+    let id = getID(); window._VMG_ID = id;
+    // Mostrar ID cuando DOM esté listo
+    let mostrarID = ()=>{ let el=$('device-id-display'); if(el) el.textContent=id; };
+    if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', mostrarID); else mostrarID();
+    setTimeout(mostrarID, 300);
+
+    // Checar licencia guardada
+    let lic=null, dev=null;
+    try{ lic=localStorage.getItem('vmg_licencia'); dev=localStorage.getItem('vmg_device_id_verified'); }catch(e){}
+    if(lic && dev===id && lic===getClave(id)){
+      // Activado permanente
+      $('lock-screen').classList.remove('visible');
+      $('trial-banner').classList.remove('visible');
+      return;
+    }
+    
+    if(enPrueba()){
+      // MODO PRUEBA - ENTRAR DIRECTO
+      $('lock-screen').classList.remove('visible');
+      let menu = $('menu-principal'); if(menu) menu.style.display='';
+      let b = $('trial-banner'); 
+      if(b){
+        let r=tiempo();
+        b.textContent="⏳ MODO PRUEBA: Te quedan "+r.h+"h "+r.m+"m - Luego pedirá clave";
+        b.classList.add('visible');
+        document.body.style.paddingTop='30px';
+        setInterval(()=>{ let rr=tiempo(); if(rr.total<=0){ b.classList.remove('visible'); $('lock-screen').classList.add('visible'); $('menu-principal').style.display='none'; } else { b.textContent="⏳ MODO PRUEBA: Te quedan "+rr.h+"h "+rr.m+"m - Luego pedirá clave"; } },60000);
+      }
+      console.log("ENTRANDO EN PRUEBA 1 DIA");
+    } else {
+      // EXPIRADO
+      $('lock-screen').classList.add('visible');
+      let menu=$('menu-principal'); if(menu) menu.style.display='none';
+      let b=$('trial-banner'); if(b) b.classList.remove('visible');
+    }
+  }catch(e){
+    console.log("Error licencia, entrando en prueba por seguridad", e);
+    // Si hay cualquier error, dejamos entrar en prueba
+    try{ $('lock-screen').classList.remove('visible'); $('menu-principal').style.display=''; }catch(e2){}
+  }
+})();
+</script>
+
 </body>
 </html>
