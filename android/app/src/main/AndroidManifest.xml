@@ -1,1 +1,49 @@
+package com.versatilidad.editor;
 
+import android.os.Bundle;
+import android.os.Environment;
+import android.provider.Settings;
+import com.getcapacitor.BridgeActivity;
+import java.io.*;
+
+public class MainActivity extends BridgeActivity {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        
+        // Exponer interfaz JavaScript para guardar reloj fuera de la app
+        this.getBridge().getWebView().addJavascriptInterface(new Object(){
+            @android.webkit.JavascriptInterface
+            public String getDeviceId(){
+                try{
+                    String id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+                    if(id==null) id = "unknown";
+                    return "VMG-" + id.toUpperCase().substring(0, Math.min(6, id.length()));
+                }catch(Exception e){ return "VMG-XXXX"; }
+            }
+            @android.webkit.JavascriptInterface
+            public void saveTrialFile(String timestamp){
+                try{
+                    File docs = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+                    if(!docs.exists()) docs.mkdirs();
+                    File f = new File(docs, "vmg_trial.json");
+                    FileWriter fw = new FileWriter(f, false);
+                    fw.write(timestamp);
+                    fw.close();
+                }catch(Exception e){ e.printStackTrace(); }
+            }
+            @android.webkit.JavascriptInterface
+            public String readTrialFile(){
+                try{
+                    File docs = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+                    File f = new File(docs, "vmg_trial.json");
+                    if(!f.exists()) return "0";
+                    BufferedReader br = new BufferedReader(new FileReader(f));
+                    String line = br.readLine();
+                    br.close();
+                    return line!=null?line:"0";
+                }catch(Exception e){ return "0"; }
+            }
+        }, "AndroidInterface");
+    }
+}
