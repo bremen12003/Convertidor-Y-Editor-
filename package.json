@@ -1,10 +1,10 @@
 {
-  "name": "versatilidad-app",
+  "name": "versatilidad-musical",
   "version": "1.0.0",
-  "description": "Versatilidad Musical - Convertidor · Editor",
+  "private": true,
   "dependencies": {
-    "@capacitor/core": "^8.5.0",
-    "@capacitor/cli": "^8.5.0",
-    "@capacitor/android": "^8.5.0"
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/filesystem": "^6.0.0"
   }
 }
